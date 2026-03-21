@@ -25,6 +25,11 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
+        <activity
+            android:name="com.google.android.gms.oss.licenses.v2.OssLicensesMenuActivity"
+            tools:replace="android:theme"
+            android:theme="@style/Theme.SimpleVideoTrimmer" />
     </application>
 
 </manifest>

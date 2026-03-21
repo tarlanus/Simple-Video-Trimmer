@@ -5,6 +5,7 @@ plugins {
     alias(libs.plugins.jetbrains.kotlin.serialization)
     id("com.google.devtools.ksp")
     id("com.google.dagger.hilt.android")
+    id("com.google.android.gms.oss-licenses-plugin")
 }
 
 android {
@@ -77,5 +78,6 @@ dependencies {
     implementation(libs.androidx.media3.common)
     implementation(libs.androidx.media3.muxer)
     implementation(libs.androidx.material3)
+    implementation("com.google.android.gms:play-services-oss-licenses:17.4.0")
 
 }

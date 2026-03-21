@@ -1,23 +1,30 @@
 package com.tarlanus.simplevideotrimmer.presentation.Main.screen
 
+import android.content.Intent
 import android.net.Uri
 import android.util.Log
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.PickVisualMediaRequest
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Source
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
@@ -28,6 +35,7 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -38,6 +46,7 @@ import androidx.lifecycle.LifecycleEventObserver
 import androidx.lifecycle.compose.LocalLifecycleOwner
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.media3.common.MediaItem
+import com.google.android.gms.oss.licenses.v2.OssLicensesMenuActivity
 import com.tarlanus.simplevideotrimmer.domain.MediaDetails
 import com.tarlanus.simplevideotrimmer.presentation.Main.viewmodels.ViewModelMain
 import com.tarlanus.simplevideotrimmer.presentation.Main.viewstates.ViewStateMain
@@ -58,6 +67,7 @@ fun MainScreen(
     val uiState = viewModelMain.viewStateMain.collectAsStateWithLifecycle()
     val exoState = viewModelMain.viewStateExo.collectAsStateWithLifecycle(ViewStateExo.IDLE)
 
+    val context = LocalContext.current
     val lifeCycleOwner = LocalLifecycleOwner.current
     val lifecycle = lifeCycleOwner.lifecycle
 
@@ -148,6 +158,17 @@ fun MainScreen(
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
+
+        Row(modifier = Modifier.padding(horizontal = 10.dp).fillMaxWidth(), horizontalArrangement = Arrangement.End) {
+            Column(horizontalAlignment = Alignment.CenterHorizontally, modifier = Modifier.clickable{
+                val intent = Intent(context, OssLicensesMenuActivity::class.java)
+                context.startActivity(intent)
+            }) {
+                Text("Open source licenses", fontSize = 12.sp, textAlign = TextAlign.Center, color = Color.Black)
+                Icon(contentDescription = "Open source licenses for Simple Video Trimmer", modifier = Modifier.size(24.dp), imageVector = Icons.Default.Source)
+
+            }
+        }
 
         Text("INPUT", fontSize = 24.sp, textAlign = TextAlign.Start, color = Color.Black)
         Spacer(modifier = Modifier.height(15.dp))
