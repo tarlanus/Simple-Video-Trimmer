@@ -1,7 +1,6 @@
 package com.tarlanus.simplevideotrimmer.presentation.Main.screen
 
 import android.content.Intent
-import android.net.Uri
 import android.util.Log
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.PickVisualMediaRequest
@@ -31,7 +30,6 @@ import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -45,15 +43,13 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleEventObserver
 import androidx.lifecycle.compose.LocalLifecycleOwner
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import androidx.media3.common.MediaItem
 import com.google.android.gms.oss.licenses.v2.OssLicensesMenuActivity
 import com.tarlanus.simplevideotrimmer.domain.MediaDetails
 import com.tarlanus.simplevideotrimmer.presentation.Main.viewmodels.ViewModelMain
 import com.tarlanus.simplevideotrimmer.presentation.Main.viewstates.ViewStateMain
 import com.tarlanus.simplevideotrimmer.presentation.exocontroller.ExoPreview
 import com.tarlanus.simplevideotrimmer.presentation.exocontroller.ViewStateExo
-import com.tarlanus.simplevideotrimmer.ui.theme.AccentGreen
-import com.tarlanus.simplevideotrimmer.ui.theme.AccentYellow
+import com.tarlanus.simplevideotrimmer.ui.theme.LocalCustomAccentColors
 
 @Composable
 fun MainScreen(
@@ -154,7 +150,7 @@ fun MainScreen(
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .background(AccentYellow),
+            .background(LocalCustomAccentColors.current.accentBackground),
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
@@ -164,14 +160,13 @@ fun MainScreen(
                 val intent = Intent(context, OssLicensesMenuActivity::class.java)
                 context.startActivity(intent)
             }) {
-                Text("Open source licenses", fontSize = 12.sp, textAlign = TextAlign.Center, color = Color.Black)
+                Text("Open source licenses", fontSize = 12.sp, textAlign = TextAlign.Center, color = LocalCustomAccentColors.current.accentText)
                 Icon(contentDescription = "Open source licenses for Simple Video Trimmer", modifier = Modifier.size(24.dp), imageVector = Icons.Default.Source)
 
             }
         }
 
-        Text("INPUT", fontSize = 24.sp, textAlign = TextAlign.Start, color = Color.Black)
-        Spacer(modifier = Modifier.height(15.dp))
+        Text("INPUT", fontSize = 24.sp, textAlign = TextAlign.Start, color = LocalCustomAccentColors.current.accentText)
 
 
         Box(
@@ -205,7 +200,7 @@ fun MainScreen(
 
                 ViewStateMain.LOADING -> {
 
-                    CircularProgressIndicator(color = AccentYellow)
+                    CircularProgressIndicator(color = LocalCustomAccentColors.current.accentBackground)
 
                 }
 
@@ -267,9 +262,8 @@ fun MainScreen(
             details.value.mediaDetails,
             fontSize = 20.sp,
             textAlign = TextAlign.Center,
-            color = Color.Black
+            color = LocalCustomAccentColors.current.accentText
         )
-        Spacer(modifier = Modifier.height(15.dp))
         Column(
             modifier = Modifier
                 .padding(horizontal = 20.dp)
@@ -279,43 +273,43 @@ fun MainScreen(
                 details.value.name,
                 fontSize = 18.sp,
                 textAlign = TextAlign.Start,
-                color = Color.Black
+                color = LocalCustomAccentColors.current.accentText
             )
             Text(
                 details.value.size,
                 fontSize = 18.sp,
                 textAlign = TextAlign.Start,
-                color = Color.Black
+                color = LocalCustomAccentColors.current.accentText
             )
             Text(
                 details.value.resolution,
                 fontSize = 18.sp,
                 textAlign = TextAlign.Start,
-                color = Color.Black
+                color = LocalCustomAccentColors.current.accentText
             )
             Text(
                 details.value.path,
                 fontSize = 18.sp,
                 textAlign = TextAlign.Start,
-                color = Color.Black
+                color = LocalCustomAccentColors.current.accentText
             )
             Text(
                 details.value.bitrate,
                 fontSize = 18.sp,
                 textAlign = TextAlign.Start,
-                color = Color.Black
+                color = LocalCustomAccentColors.current.accentText
             )
             Text(
                 details.value.frameRate,
                 fontSize = 18.sp,
                 textAlign = TextAlign.Start,
-                color = Color.Black
+                color = LocalCustomAccentColors.current.accentText
             )
             Text(
                 details.value.duration,
                 fontSize = 18.sp,
                 textAlign = TextAlign.Start,
-                color = Color.Black
+                color = LocalCustomAccentColors.current.accentText
             )
         }
 
@@ -339,7 +333,7 @@ fun MainScreen(
             modifier = Modifier.padding(horizontal = 15.dp),
             shape = RoundedCornerShape(10.dp),
             colors = ButtonDefaults.buttonColors(
-                containerColor = AccentGreen,
+                containerColor = LocalCustomAccentColors.current.accentButton,
                 contentColor = Color.Gray.copy(alpha = 1f)
             )
         ) {
@@ -361,7 +355,7 @@ fun MainScreen(
                 textButton,
                 fontSize = 18.sp,
                 textAlign = TextAlign.Start,
-                color = Color.Black
+                color = LocalCustomAccentColors.current.accentText
             )
 
         }
@@ -373,7 +367,7 @@ fun MainScreen(
             }, modifier = Modifier.padding(horizontal = 15.dp),
             shape = RoundedCornerShape(10.dp),
             colors = ButtonDefaults.buttonColors(
-                containerColor = AccentGreen,
+                containerColor = LocalCustomAccentColors.current.accentButton,
                 contentColor = Color.Gray.copy(alpha = 1f)
             )
 
@@ -382,7 +376,7 @@ fun MainScreen(
                 "Clear",
                 fontSize = 18.sp,
                 textAlign = TextAlign.Start,
-                color = Color.Black
+                color = LocalCustomAccentColors.current.accentText
             )
         }
 

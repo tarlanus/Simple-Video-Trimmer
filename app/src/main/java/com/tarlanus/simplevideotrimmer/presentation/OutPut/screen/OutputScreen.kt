@@ -1,8 +1,6 @@
 package com.tarlanus.simplevideotrimmer.presentation.OutPut.screen
 
-import android.util.Log
 import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -31,18 +29,14 @@ import androidx.compose.ui.unit.sp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleEventObserver
-import androidx.lifecycle.compose.LifecycleEventEffect
 import androidx.lifecycle.compose.LocalLifecycleOwner
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import androidx.lifecycle.viewmodel.compose.viewModel
-import androidx.media3.common.MediaItem
 import com.tarlanus.simplevideotrimmer.domain.MediaDetails
 import com.tarlanus.simplevideotrimmer.presentation.Main.viewstates.ViewStateMain
 import com.tarlanus.simplevideotrimmer.presentation.OutPut.viewmodels.ViewModelOutput
 import com.tarlanus.simplevideotrimmer.presentation.exocontroller.ExoPreview
 import com.tarlanus.simplevideotrimmer.presentation.exocontroller.ViewStateExo
-import com.tarlanus.simplevideotrimmer.ui.theme.AccentGreen
-import com.tarlanus.simplevideotrimmer.ui.theme.AccentYellow
+import com.tarlanus.simplevideotrimmer.ui.theme.LocalCustomAccentColors
 
 @Composable
 fun OutputScreen(
@@ -127,13 +121,12 @@ fun OutputScreen(
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .background(AccentYellow),
+            .background(LocalCustomAccentColors.current.accentBackground),
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
 
 
-        Spacer(modifier = Modifier.height(15.dp))
 
 
         Box(
@@ -165,7 +158,7 @@ fun OutputScreen(
 
                 ViewStateMain.LOADING -> {
 
-                    CircularProgressIndicator(color = AccentYellow)
+                    CircularProgressIndicator(color = LocalCustomAccentColors.current.accentBackground)
 
                 }
 
@@ -220,9 +213,8 @@ fun OutputScreen(
             details.value.mediaDetails,
             fontSize = 20.sp,
             textAlign = TextAlign.Center,
-            color = Color.Black
+            color = LocalCustomAccentColors.current.accentText
         )
-        Spacer(modifier = Modifier.height(15.dp))
         Column(
             modifier = Modifier
                 .padding(horizontal = 20.dp)
@@ -232,43 +224,43 @@ fun OutputScreen(
                 details.value.name,
                 fontSize = 18.sp,
                 textAlign = TextAlign.Start,
-                color = Color.Black
+                color = LocalCustomAccentColors.current.accentText
             )
             Text(
                 details.value.size,
                 fontSize = 18.sp,
                 textAlign = TextAlign.Start,
-                color = Color.Black
+                color = LocalCustomAccentColors.current.accentText
             )
             Text(
                 details.value.resolution,
                 fontSize = 18.sp,
                 textAlign = TextAlign.Start,
-                color = Color.Black
+                color =LocalCustomAccentColors.current.accentText
             )
             Text(
                 details.value.path,
                 fontSize = 18.sp,
                 textAlign = TextAlign.Start,
-                color = Color.Black
+                color = LocalCustomAccentColors.current.accentText
             )
             Text(
                 details.value.bitrate,
                 fontSize = 18.sp,
                 textAlign = TextAlign.Start,
-                color = Color.Black
+                color = LocalCustomAccentColors.current.accentText
             )
             Text(
                 details.value.frameRate,
                 fontSize = 18.sp,
                 textAlign = TextAlign.Start,
-                color = Color.Black
+                color = LocalCustomAccentColors.current.accentText
             )
             Text(
                 details.value.duration,
                 fontSize = 18.sp,
                 textAlign = TextAlign.Start,
-                color = Color.Black
+                color =LocalCustomAccentColors.current.accentText
             )
         }
 
@@ -282,7 +274,7 @@ fun OutputScreen(
             modifier = Modifier.padding(horizontal = 15.dp),
             shape = RoundedCornerShape(10.dp),
             colors = ButtonDefaults.buttonColors(
-                containerColor = AccentGreen,
+                containerColor = LocalCustomAccentColors.current.accentButton,
                 contentColor = Color.Gray.copy(alpha = 1f)
             )
         ) {
@@ -290,7 +282,7 @@ fun OutputScreen(
                 "GO BACK",
                 fontSize = 18.sp,
                 textAlign = TextAlign.Start,
-                color = Color.Black
+                color = LocalCustomAccentColors.current.accentText
             )
 
         }

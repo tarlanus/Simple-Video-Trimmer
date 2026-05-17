@@ -48,8 +48,7 @@ import com.tarlanus.simplevideotrimmer.presentation.Trim.viewstates.ViewStatePro
 import com.tarlanus.simplevideotrimmer.presentation.Trim.viewstates.ViewStateTrim
 import com.tarlanus.simplevideotrimmer.presentation.exocontroller.ExoPreview
 import com.tarlanus.simplevideotrimmer.presentation.exocontroller.ViewStateExo
-import com.tarlanus.simplevideotrimmer.ui.theme.AccentGreen
-import com.tarlanus.simplevideotrimmer.ui.theme.AccentYellow
+import com.tarlanus.simplevideotrimmer.ui.theme.LocalCustomAccentColors
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
@@ -191,7 +190,7 @@ fun TrimScreen(
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .background(AccentYellow),
+            .background(LocalCustomAccentColors.current.accentBackground),
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
@@ -221,7 +220,7 @@ fun TrimScreen(
 
                 ViewStateTrim.IDLE -> {}
                 ViewStateTrim.LOADING -> {
-                    CircularProgressIndicator(color = AccentYellow)
+                    CircularProgressIndicator(color = LocalCustomAccentColors.current.accentBackground)
                 }
             }
             when (getExoState) {
@@ -319,8 +318,8 @@ fun TrimScreen(
             setStart = "$setStart  --  "
 
 
-            Text(setStart, fontSize = 18.sp, textAlign = TextAlign.Start, color = Color.Black)
-            Text(setEnd, fontSize = 18.sp, textAlign = TextAlign.Start, color = Color.Black)
+            Text(setStart, fontSize = 18.sp, textAlign = TextAlign.Start, color =LocalCustomAccentColors.current.accentText)
+            Text(setEnd, fontSize = 18.sp, textAlign = TextAlign.Start, color =LocalCustomAccentColors.current.accentText)
 
         }
         Spacer(modifier = Modifier.height(15.dp))
@@ -328,8 +327,8 @@ fun TrimScreen(
         RangeSlider(
             state = sliderState,
             colors = SliderColors(
-                thumbColor = AccentGreen,
-                activeTickColor = AccentGreen,
+                thumbColor = LocalCustomAccentColors.current.accentButton,
+                activeTickColor = LocalCustomAccentColors.current.accentButton,
                 inactiveTickColor = Color.Gray,
                 disabledThumbColor = Color.Gray,
                 disabledActiveTrackColor = Color.Gray,
@@ -337,7 +336,7 @@ fun TrimScreen(
                 disabledInactiveTickColor = Color.Gray,
                 disabledInactiveTrackColor = Color.Gray,
                 inactiveTrackColor = Color.Gray,
-                activeTrackColor = AccentGreen
+                activeTrackColor = LocalCustomAccentColors.current.accentButton
             )
         )
 
@@ -356,7 +355,7 @@ fun TrimScreen(
             modifier = Modifier.padding(horizontal = 15.dp),
             shape = RoundedCornerShape(10.dp),
             colors = ButtonDefaults.buttonColors(
-                containerColor = AccentGreen,
+                containerColor = LocalCustomAccentColors.current.accentButton,
                 contentColor = Color.Gray.copy(alpha = 1f)
             )
         ) {
@@ -364,7 +363,7 @@ fun TrimScreen(
                 "TRIM",
                 fontSize = 18.sp,
                 textAlign = TextAlign.Start,
-                color = Color.Black
+                color = LocalCustomAccentColors.current.accentText
             )
 
         }

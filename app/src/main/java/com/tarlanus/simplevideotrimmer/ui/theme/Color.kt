@@ -10,6 +10,14 @@ val Purple40 = Color(0xFF6650a4)
 val PurpleGrey40 = Color(0xFF625b71)
 val Pink40 = Color(0xFF7D5260)
 
-val AccentYellow = Color(0xFFFFEC6D)
 
-val AccentGreen = Color(0xFF8BFF00)
+
+val accentLightBackground = Color(0xFFFFEC80)
+val accentDarkBackground = Color(0xFF3D3939)
+
+val accentLightButton = Color(0xFF8BFF00)
+val accentDarkButton= Color(0xFF457C00)
+
+
+val accentLightText = Color(0xFF000000)
+val accentDarkText= Color(0xFFFFFFFF)

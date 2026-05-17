@@ -21,7 +21,7 @@ import com.tarlanus.simplevideotrimmer.presentation.Screens.ScreenMain
 import com.tarlanus.simplevideotrimmer.presentation.Screens.ScreenOutput
 import com.tarlanus.simplevideotrimmer.presentation.Screens.ScreenTrim
 import com.tarlanus.simplevideotrimmer.presentation.Trim.screen.TrimScreen
-import com.tarlanus.simplevideotrimmer.ui.theme.AccentYellow
+import com.tarlanus.simplevideotrimmer.ui.theme.LocalCustomAccentColors
 import com.tarlanus.simplevideotrimmer.ui.theme.SimpleVideoTrimmerTheme
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -40,7 +40,7 @@ class MainActivity : ComponentActivity() {
                     NavDisplay(
                         modifier = Modifier.Companion
                             .fillMaxSize()
-                            .background(AccentYellow)
+                            .background(LocalCustomAccentColors.current.accentBackground)
                             .padding(paddingValues),
                         backStack = navBackStack,
                         onBack = {
