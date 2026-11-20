@@ -292,6 +292,7 @@ fun TrimScreen(
 
         RangeSlider(
             state = sliderState,
+            modifier = Modifier.padding(horizontal = 48.dp),
             colors = SliderColors(
                 thumbColor = LocalCustomAccentColors.current.accentButton,
                 activeTickColor = LocalCustomAccentColors.current.accentButton,
