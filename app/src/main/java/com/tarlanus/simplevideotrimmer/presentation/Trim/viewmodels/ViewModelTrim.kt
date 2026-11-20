@@ -16,7 +16,6 @@ import com.tarlanus.simplevideotrimmer.presentation.Trim.viewstates.ViewStateTri
 import com.tarlanus.simplevideotrimmer.presentation.exocontroller.ViewStateExo
 import com.tarlanus.simplevideotrimmer.utils.Resource
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -25,15 +24,22 @@ import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
 import java.io.File
-import javax.inject.Inject
+import dagger.assisted.Assisted
+import dagger.assisted.AssistedFactory
+import dagger.assisted.AssistedInject
 
-@HiltViewModel
-class ViewModelTrim @Inject constructor(
+@HiltViewModel(assistedFactory = ViewModelTrim.Factory::class)
+class ViewModelTrim @AssistedInject constructor(
+    @Assisted private val inputPath: String,
     private val useCaseMedia: UseCaseMediaMetadataRetrieve,
     private val playerBuilderInterface: PlayerBuilderInterface,
     private val usegetTimeFormatting: UseCaseTimeFormatter,
     private val useCaseTrim: UseCaseTrim
 ) : ViewModel() {
+    @AssistedFactory
+    interface Factory {
+        fun create(inputPath: String): ViewModelTrim
+    }
 
     private val _viewStateTrimUI: MutableStateFlow<ViewStateTrim> =
         MutableStateFlow(ViewStateTrim.IDLE)
@@ -47,15 +53,11 @@ class ViewModelTrim @Inject constructor(
     val viewStateExo: StateFlow<ViewStateExo> get() = _viewStateExo.asStateFlow()
     private var exoplayer: ExoPlayer? = null
 
-    private var mediaJob: Job? = null
     private var mediaPath: String? = null
     private var lastStartPosition: Long? = null
     private var lastEndposition: Long? = null
 
-
-
-
-    fun setSeek(start: Long, end: Long, inputPath: String) {
+    fun setSeek(start: Long, end: Long) {
         if (_viewStateProgress.value is ViewStateProgress.PROGRESS) {
             return
         }
@@ -92,9 +94,12 @@ class ViewModelTrim @Inject constructor(
     }
 
 
-    fun setVideoInput(getRealPath: String) {
-        clearMediaJob()
-        mediaJob = useCaseMedia.executeRetrieveMetadata(getRealPath).onEach {
+    init {
+        setVideoInput()
+    }
+
+    private fun setVideoInput() {
+        useCaseMedia.executeRetrieveMetadata(inputPath).onEach {
 
             val getData = it
 
@@ -109,14 +114,12 @@ class ViewModelTrim @Inject constructor(
                 }
 
                 is Resource.SUCCESS -> {
-                    val path = getRealPath
+                    val path = inputPath
                     val mediaData = getData.data
                     if (mediaData != null) {
                         _viewStateTrimUI.value = ViewStateTrim.IDLE
 
                         mediaPath = path
-                        val mediaItem = MediaItem.fromUri(path)
-                        exoplayer?.setMediaItem(mediaItem)
                     }
 
                 }
@@ -142,10 +145,10 @@ class ViewModelTrim @Inject constructor(
         exoplayer = getExoplayer
         _viewStateExo.value = ViewStateExo.EXO(exoplayer)
 
-        val getPath = mediaPath
 
 
-        if (exoplayer?.mediaItemCount == 0 && getPath != null) {
+
+        if (exoplayer?.mediaItemCount == 0) {
 
 
             if (exoplayer?.playWhenReady == false) {
@@ -155,7 +158,7 @@ class ViewModelTrim @Inject constructor(
                 val getLastEnd = lastEndposition
 
                 if (getLastStart != null && getLastEnd != null) {
-                    setSeek(getLastStart, getLastEnd, getPath)
+                    setSeek(getLastStart, getLastEnd)
                 }
             }
         }
@@ -170,19 +173,8 @@ class ViewModelTrim @Inject constructor(
     }
 
 
-    fun clearMediaJob() {
-        mediaJob?.cancel()
-        _viewStateTrimUI.value = ViewStateTrim.IDLE
-        if (_viewStateProgress.value is ViewStateProgress.PROGRESS) {
-            return
-        }
-        _viewStateProgress.value = ViewStateProgress.IDLE
-
-    }
-
     override fun onCleared() {
         super.onCleared()
-        clearMediaJob()
         stopExoBuildPlayer()
 
 

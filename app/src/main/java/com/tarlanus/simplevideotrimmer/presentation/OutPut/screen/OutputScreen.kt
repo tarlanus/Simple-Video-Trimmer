@@ -42,7 +42,9 @@ import com.tarlanus.simplevideotrimmer.ui.theme.LocalCustomAccentColors
 fun OutputScreen(
     onClick: () -> Unit,
     outputPath: String,
-    viewModelOutput: ViewModelOutput = hiltViewModel()
+    viewModelOutput: ViewModelOutput = hiltViewModel<ViewModelOutput, ViewModelOutput.Factory>(
+        creationCallback = { factory -> factory.create(outputPath) }
+    )
 ) {
     val details = remember { mutableStateOf(MediaDetails()) }
     val uiState = viewModelOutput.viewStateUI.collectAsStateWithLifecycle()
@@ -51,22 +53,6 @@ fun OutputScreen(
 
 
 
-
-    LaunchedEffect(Unit) {
-        viewModelOutput?.clearMediaJob()
-
-    }
-    DisposableEffect(Unit) {
-        onDispose {
-            viewModelOutput?.clearMediaJob()
-
-        }
-    }
-
-    LaunchedEffect(outputPath) {
-        viewModelOutput.retrieveMediaMetaData(outputPath)
-
-    }
 
     val lOwner = LocalLifecycleOwner.current
 

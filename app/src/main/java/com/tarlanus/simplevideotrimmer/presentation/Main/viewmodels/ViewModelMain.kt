@@ -113,7 +113,7 @@ class ViewModelMain @Inject constructor(
     }
 
 
-    fun clearMediaJob() {
+    private fun clearMediaJob() {
         mediaJob?.cancel()
 
         if (_viewStateMain.value is ViewStateMain.SUCCESS == false)  {
@@ -132,7 +132,6 @@ class ViewModelMain @Inject constructor(
 
     override fun onCleared() {
         super.onCleared()
-        clearMediaJob()
         stopExoBuildPlayer()
 
 

@@ -1,13 +1,9 @@
 package com.tarlanus.simplevideotrimmer.presentation.OutPut.viewmodels
 
-import android.content.Context
-import android.net.Uri
-import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.media3.common.MediaItem
 import androidx.media3.exoplayer.ExoPlayer
-import com.tarlanus.simplevideotrimmer.domain.UseCaseGetPath
 import com.tarlanus.simplevideotrimmer.domain.UseCaseMediaMetadataRetrieve
 import com.tarlanus.simplevideotrimmer.domain.exoplayer.PlayerBuilderInterface
 import com.tarlanus.simplevideotrimmer.presentation.Main.viewstates.ViewStateMain
@@ -15,22 +11,25 @@ import com.tarlanus.simplevideotrimmer.presentation.exocontroller.ViewStateExo
 import com.tarlanus.simplevideotrimmer.utils.Resource
 
 import dagger.hilt.android.lifecycle.HiltViewModel
-import dagger.hilt.android.qualifiers.ApplicationContext
-import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
-import javax.inject.Inject
+import dagger.assisted.Assisted
+import dagger.assisted.AssistedFactory
+import dagger.assisted.AssistedInject
 
-@HiltViewModel
-class ViewModelOutput @Inject constructor(
-    private val useCasePath: UseCaseGetPath,
-    @ApplicationContext private val context: Context,
+@HiltViewModel(assistedFactory = ViewModelOutput.Factory::class)
+class ViewModelOutput @AssistedInject constructor(
+    @Assisted private val outputPath: String,
     private val useCaseMedia: UseCaseMediaMetadataRetrieve,
     private val playerBuilderInterface: PlayerBuilderInterface
 ) : ViewModel() {
+    @AssistedFactory
+    interface Factory {
+        fun create(outputPath: String): ViewModelOutput
+    }
 
 
     private val _viewStateUI: MutableStateFlow<ViewStateMain> = MutableStateFlow(ViewStateMain.IDLE)
@@ -40,13 +39,15 @@ class ViewModelOutput @Inject constructor(
     val viewStateExo: StateFlow<ViewStateExo> get() = _viewStateExo.asStateFlow()
     private var exoplayer : ExoPlayer? = null
 
-    private var mediaJob: Job? = null
     private var mediaPath: String? = null
 
 
-    fun retrieveMediaMetaData(getRealPath: String) {
-        clearMediaJob()
-        mediaJob = useCaseMedia.executeRetrieveMetadata(getRealPath).onEach {
+    init {
+        retrieveMediaMetaData()
+    }
+
+    private fun retrieveMediaMetaData() {
+        useCaseMedia.executeRetrieveMetadata(outputPath).onEach {
 
             val getData = it
 
@@ -61,7 +62,7 @@ class ViewModelOutput @Inject constructor(
                 }
 
                 is Resource.SUCCESS -> {
-                    val path = getRealPath
+                    val path = outputPath
                     val mediaData = getData.data
                     if (mediaData != null) {
 
@@ -105,15 +106,8 @@ class ViewModelOutput @Inject constructor(
     }
 
 
-    fun clearMediaJob() {
-        mediaJob?.cancel()
-        _viewStateUI.value = ViewStateMain.IDLE
-
-    }
-
     override fun onCleared() {
         super.onCleared()
-        clearMediaJob()
         stopExoBuildPlayer()
 
 

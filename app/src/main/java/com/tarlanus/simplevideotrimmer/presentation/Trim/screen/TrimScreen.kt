@@ -1,6 +1,5 @@
 package com.tarlanus.simplevideotrimmer.presentation.Trim.screen
 
-import android.util.Log
 import androidx.activity.compose.LocalActivity
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -28,7 +27,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -37,11 +36,11 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleEventObserver
 import androidx.lifecycle.compose.LocalLifecycleOwner
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import androidx.lifecycle.viewmodel.compose.viewModel
 import com.tarlanus.simplevideotrimmer.domain.MediaDetails
 import com.tarlanus.simplevideotrimmer.presentation.Trim.viewmodels.ViewModelTrim
 import com.tarlanus.simplevideotrimmer.presentation.Trim.viewstates.ViewStateProgress
@@ -50,7 +49,6 @@ import com.tarlanus.simplevideotrimmer.presentation.exocontroller.ExoPreview
 import com.tarlanus.simplevideotrimmer.presentation.exocontroller.ViewStateExo
 import com.tarlanus.simplevideotrimmer.ui.theme.LocalCustomAccentColors
 import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -58,13 +56,17 @@ fun TrimScreen(
     onClick: (String) -> Unit,
     inputPath: String,
     videoDetails: MediaDetails,
-    viewModelTrim: ViewModelTrim = viewModel()
+    viewModelTrim: ViewModelTrim = hiltViewModel<ViewModelTrim, ViewModelTrim.Factory>(
+        creationCallback = { factory -> factory.create(inputPath) }
+    )
 ) {
 
     val activity = LocalActivity.current
 
-    val valueMaxSet = remember { mutableFloatStateOf(59f) }
-    val maxValueRange = remember { mutableFloatStateOf(0f) }
+    val durationSeconds = remember(videoDetails.duration) {
+        (videoDetails.duration.filter { it.isDigit() }.toLongOrNull() ?: 0L) / 1000f
+    }
+    val maxSelectableRange = minOf(durationSeconds, 59f)
 
     val showDialog = remember { mutableStateOf(false) }
     val dialogMessage = remember { mutableStateOf<String?>(null) }
@@ -82,16 +84,6 @@ fun TrimScreen(
         }
     }
 
-    LaunchedEffect(Unit) {
-        viewModelTrim?.clearMediaJob()
-
-    }
-    DisposableEffect(Unit) {
-        onDispose {
-            viewModelTrim?.clearMediaJob()
-
-        }
-    }
     val lifecycleOwner = LocalLifecycleOwner.current
     val lifeCycle = lifecycleOwner.lifecycle
 
@@ -126,42 +118,14 @@ fun TrimScreen(
 
     }
 
-    LaunchedEffect(inputPath, videoDetails) {
-        viewModelTrim.setVideoInput(inputPath)
+    var startValue by rememberSaveable { mutableFloatStateOf(0f) }
+    var endValue by rememberSaveable { mutableFloatStateOf(maxSelectableRange) }
 
-        val durationMs = videoDetails.duration.filter { it.isDigit() }.toLongOrNull()
-        if (durationMs != null) {
-
-            val seconds = durationMs / 1000f
-            maxValueRange.floatValue = seconds
-
-            valueMaxSet.floatValue = if (seconds > 59f) 59f else seconds
-
-
-        }
-    }
-
-    var startValue by remember { mutableFloatStateOf(0f) }
-    var endValue by remember { mutableFloatStateOf(valueMaxSet.floatValue) }
-    val maxSelectableRange = valueMaxSet.floatValue
-
-
-
-
-
-
-
-    LaunchedEffect(valueMaxSet.floatValue) {
-        startValue = 0f
-        endValue = valueMaxSet.floatValue
-    }
-
-
-    val sliderState = remember(maxValueRange.floatValue) {
+    val sliderState = remember(durationSeconds) {
         RangeSliderState(
             activeRangeStart = startValue,
             activeRangeEnd = endValue,
-            valueRange = 0f..maxValueRange.floatValue
+            valueRange = 0f..durationSeconds
         )
     }
     LaunchedEffect(sliderState.activeRangeStart, sliderState.activeRangeEnd) {
@@ -178,12 +142,12 @@ fun TrimScreen(
         startValue = sliderState.activeRangeStart
         endValue = sliderState.activeRangeEnd
     }
-    LaunchedEffect(startValue) {
+    LaunchedEffect(startValue, endValue) {
         val startpositionMs = (startValue * 1000).toLong()
         val endpositionMs = (endValue * 1000).toLong()
 
 
-        viewModelTrim.setSeek(startpositionMs, endpositionMs, inputPath)
+        viewModelTrim.setSeek(startpositionMs, endpositionMs)
     }
 
 
@@ -290,7 +254,9 @@ fun TrimScreen(
                     showDialog.value = false
                     dialogMessage.value = null
 
-                    onClick(getProgressState.path)
+                    LaunchedEffect(getProgressState.path) {
+                        onClick(getProgressState.path)
+                    }
                 }
             }
 

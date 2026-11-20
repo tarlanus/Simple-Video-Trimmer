@@ -80,22 +80,6 @@ fun MainScreen(
 
         }
 
-
-
-    LaunchedEffect(Unit) {
-        viewModelMain?.clearMediaJob()
-
-
-    }
-    DisposableEffect(Unit) {
-        onDispose {
-            viewModelMain?.clearMediaJob()
-
-
-
-        }
-    }
-
     DisposableEffect(lifeCycleOwner) {
 
         val observer = LifecycleEventObserver { _, event ->
