@@ -20,7 +20,8 @@ fun PlayPauseButton(player: Player, modifier: Modifier = Modifier) {
     IconButton(onClick = state::onClick, modifier = modifier, enabled = state.isEnabled) {
         Icon(
             imageVector = if (state.showPlay) Icons.Default.PlayArrow else Icons.Default.Pause,
-            contentDescription = null
+            contentDescription = if (state.showPlay) "Play" else "Pause",
+            tint = androidx.compose.ui.graphics.Color.White
 
 
         )

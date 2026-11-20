@@ -124,6 +124,9 @@ class ViewModelMain @Inject constructor(
     }
     fun stopTheVideo() {
         mediaJob?.cancel()
+        mediaPath = null
+        exoplayer?.playWhenReady = false
+        exoplayer?.clearVideoSurface()
         _viewStateMain.value = ViewStateMain.IDLE
         exoplayer?.stop()
         exoplayer?.clearMediaItems()
